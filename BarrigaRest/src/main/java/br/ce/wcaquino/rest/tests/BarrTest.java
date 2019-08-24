@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,6 +74,20 @@ public class BarrTest extends BaseTest {
 			.log().all()
 			.statusCode(200)
 			.body("nome", is("conta depois da alteração"))
+		;		
+	}	
+	
+	@Test
+	public void naoDeveInserirContaMesmoNome() {
+		given()
+			.header("Authorization", "JWT " + TOKEN) 
+			.body("{\"nome\": \"conta depois da alteração\"}")
+		.when()
+			.post("/contas")// id da conta que fiz a alteração
+		.then()
+			.statusCode(400)
+			.body("error", is("Já existe uma conta com esse nome!"))
+			
 		;		
 	}	
 }

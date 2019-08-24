@@ -8,7 +8,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 
 public class BaseTest implements Constantes {
-
+//
 	@BeforeClass
 	public static void setup() {
 		RestAssured.baseURI = APP_BASE_URL;

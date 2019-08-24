@@ -3,7 +3,7 @@
   <groupId>br.ce.waquino</groupId>
   <artifactId>BarrigaRest</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  
+  //
   <dependencies>
 		<dependency>
 			<groupId>io.rest-assured</groupId>

@@ -1,11 +1,14 @@
 package br.ce.wcaquino.rest.tests;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -111,8 +114,31 @@ public class BarrTest extends BaseTest {
 			.post("/transacoes")
 		.then()
 			.statusCode(201)
-			//.body("error", is("Já existe uma conta com esse nome!"))
-			
+			//.body("error", is("Já existe uma conta com esse nome!"))	
+		;		
+	}	
+	
+	@Test
+	public void deveValidarCamposObrigatoriosMovimentacao() {
+		
+		given()
+			.header("Authorization", "JWT " + TOKEN) 
+			.body("{}")//Enviar objeto vazio
+		.when()
+			.post("/transacoes")
+		.then()
+			.statusCode(400)
+			.body("$", Matchers.hasSize(8))	//Na raíz($) tive um retorno de 8 valores
+			.body("msg", hasItems(
+					"Data da Movimentação é obrigatório",
+					"Data do pagamento é obrigatório",
+					"Descrição é obrigatório",
+					"Interessado é obrigatório",
+					"Valor é obrigatório",
+					"Valor deve ser um número",
+					"Conta é obrigatório",
+					"Situação é obrigatório"
+				))
 		;		
 	}	
 }

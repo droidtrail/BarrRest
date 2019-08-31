@@ -149,6 +149,19 @@ public class BarrTest extends BaseTest {
 		;		
 	}
 	
+	@Test
+	public void naoDeveRemoverContaComMovimentacao() {
+		
+		given()
+			.header("Authorization", "JWT " + TOKEN) 
+		.when()
+			.delete("/contas/30893")//ID da conta
+		.then()
+			.statusCode(500)
+			.body("constraint", is("transacoes_conta_id_foreign"))	
+		;		
+	}
+	
 	private Movimentacao getMovimentacaoVlida() {
 		Movimentacao mov = new Movimentacao();
 		mov.setConta_id(30893);
@@ -162,4 +175,5 @@ public class BarrTest extends BaseTest {
 		mov.setStatus(true);
 		return mov;
 	}
+	
 }

@@ -162,6 +162,19 @@ public class BarrTest extends BaseTest {
 		;		
 	}
 	
+	@Test
+	public void deveCalcularSaldoContas() {
+		
+		given()
+			.header("Authorization", "JWT " + TOKEN) 
+		.when()
+			.get("/saldo")//ID da conta
+		.then()
+			.statusCode(200)
+			.body("find{it.conta_id == 30893}.saldo", is("100.00"))	
+		;		
+	}
+	
 	private Movimentacao getMovimentacaoVlida() {
 		Movimentacao mov = new Movimentacao();
 		mov.setConta_id(30893);

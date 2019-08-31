@@ -1,9 +1,7 @@
 package br.ce.wcaquino.rest.tests;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -96,16 +94,7 @@ public class BarrTest extends BaseTest {
 	@Test
 	public void deveInserirMovimentacaoComSucesso() {
 		
-		Movimentacao mov = new Movimentacao();
-		mov.setConta_id(30893);
-		//mov.setUsuario_id(usuario_id);
-		mov.setDescricao("Descricao da Movimentacao");
-		mov.setEnvolvido("Envolvido na movimentacao");
-		mov.setTipo("REC");
-		mov.setData_transacao("01/01/2000");
-		mov.setData_pagamento("10/05/2010");
-		mov.setValor(100f);
-		mov.setStatus(true);
+		Movimentacao mov = getMovimentacaoVlida();
 		
 		given()
 			.header("Authorization", "JWT " + TOKEN) 
@@ -141,4 +130,36 @@ public class BarrTest extends BaseTest {
 				))
 		;		
 	}	
+	
+	@Test
+	public void naoDeveInserirMovimentacaoComDataFutura() {
+		
+		Movimentacao mov = getMovimentacaoVlida();
+		mov.setData_transacao("07/09/3020");//Data de transacao deve ser futura
+		
+		given()
+			.header("Authorization", "JWT " + TOKEN) 
+			.body(mov)
+		.when()
+			.post("/transacoes")
+		.then()
+			.statusCode(400)
+			.body("msg", hasItems("Data da Movimentação deve ser menor ou igual à data atual"))
+			.body("$", hasSize(1))
+		;		
+	}
+	
+	private Movimentacao getMovimentacaoVlida() {
+		Movimentacao mov = new Movimentacao();
+		mov.setConta_id(30893);
+		//mov.setUsuario_id(usuario_id);
+		mov.setDescricao("Descricao da Movimentacao");
+		mov.setEnvolvido("Envolvido na movimentacao");
+		mov.setTipo("REC");
+		mov.setData_transacao("01/01/2000");
+		mov.setData_pagamento("10/05/2010");
+		mov.setValor(100f);
+		mov.setStatus(true);
+		return mov;
+	}
 }

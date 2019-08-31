@@ -175,6 +175,18 @@ public class BarrTest extends BaseTest {
 		;		
 	}
 	
+	@Test
+	public void deveRemoverMovimentacao() {
+		
+		given()
+			.header("Authorization", "JWT " + TOKEN) 
+		.when()
+			.delete("/transacoes/22662")//ID da conta
+		.then()
+			.statusCode(204)	
+		;		
+	}
+	
 	private Movimentacao getMovimentacaoVlida() {
 		Movimentacao mov = new Movimentacao();
 		mov.setConta_id(30893);

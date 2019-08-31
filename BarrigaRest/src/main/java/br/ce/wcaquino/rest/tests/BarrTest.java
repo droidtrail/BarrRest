@@ -1,12 +1,11 @@
 package br.ce.wcaquino.rest.tests;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -87,6 +86,32 @@ public class BarrTest extends BaseTest {
 		.then()
 			.statusCode(400)
 			.body("error", is("Já existe uma conta com esse nome!"))
+			
+		;		
+	}	
+	
+	@Test
+	public void deveInserirMovimentacaoComSucesso() {
+		
+		Movimentacao mov = new Movimentacao();
+		mov.setConta_id(30893);
+		//mov.setUsuario_id(usuario_id);
+		mov.setDescricao("Descricao da Movimentacao");
+		mov.setEnvolvido("Envolvido na movimentacao");
+		mov.setTipo("REC");
+		mov.setData_transacao("01/01/2000");
+		mov.setData_pagamento("10/05/2010");
+		mov.setValor(100f);
+		mov.setStatus(true);
+		
+		given()
+			.header("Authorization", "JWT " + TOKEN) 
+			.body(mov)
+		.when()
+			.post("/transacoes")
+		.then()
+			.statusCode(201)
+			//.body("error", is("Já existe uma conta com esse nome!"))
 			
 		;		
 	}	

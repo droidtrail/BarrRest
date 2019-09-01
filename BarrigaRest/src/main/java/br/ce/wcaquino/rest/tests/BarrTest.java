@@ -49,75 +49,6 @@ public class BarrTest extends BaseTest {
 	}
 
 	@Test
-	public void t05_deveInserirMovimentacaoComSucesso() {
-		
-		Movimentacao mov = getMovimentacaoVlida();
-		
-		MOV_ID = given() 
-			.body(mov)
-		.when()
-			.post("/transacoes")
-		.then()
-			.statusCode(201)
-			.extract().path("id")
-				
-		;		
-	}	
-	
-	@Test
-	public void t06_deveValidarCamposObrigatoriosMovimentacao() {
-		
-		given() 
-			.body("{}")//Enviar objeto vazio
-		.when()
-			.post("/transacoes")
-		.then()
-			.statusCode(400)
-			.body("$", Matchers.hasSize(8))	//Na raíz($) tive um retorno de 8 valores
-			.body("msg", hasItems(
-					"Data da Movimentação é obrigatório",
-					"Data do pagamento é obrigatório",
-					"Descrição é obrigatório",
-					"Interessado é obrigatório",
-					"Valor é obrigatório",
-					"Valor deve ser um número",
-					"Conta é obrigatório",
-					"Situação é obrigatório"
-				))
-		;		
-	}	
-	
-	@Test
-	public void t07_naoDeveInserirMovimentacaoComDataFutura() {
-		
-		Movimentacao mov = getMovimentacaoVlida();
-		mov.setData_transacao(DateUtils.getDataDiferencaDias(2));//Data de transacao deve ser futura
-		
-		given() 
-			.body(mov)
-		.when()
-			.post("/transacoes")
-		.then()
-			.statusCode(400)
-			.body("msg", hasItems("Data da Movimentação deve ser menor ou igual à data atual"))
-			.body("$", hasSize(1))
-		;		
-	}
-	
-	@Test
-	public void t08_naoDeveRemoverContaComMovimentacao() {
-		
-		given()
-			.pathParam("id", CONTA_ID)
-		.when()
-			.delete("/contas/{id}")//ID da conta
-		.then()
-			.statusCode(500)
-			.body("constraint", is("transacoes_conta_id_foreign"))	
-		;		
-	}
-	
-	@Test
 	public void t09_deveCalcularSaldoContas() {
 		
 		given() 
@@ -126,18 +57,6 @@ public class BarrTest extends BaseTest {
 		.then()
 			.statusCode(200)
 			.body("find{it.conta_id == "+CONTA_ID+"}.saldo", is("100.00"))	
-		;		
-	}
-	
-	@Test
-	public void t10_deveRemoverMovimentacao() {
-		
-		given()
-			.pathParam("id", MOV_ID)
-		.when()
-			.delete("/transacoes/{id}") //ID da conta
-		.then()
-			.statusCode(204)	
 		;		
 	}
 	

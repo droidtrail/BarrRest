@@ -49,50 +49,6 @@ public class BarrTest extends BaseTest {
 	}
 
 	@Test
-	public void t02_deveIncluirContaComSucesso() {
-		
-		//Criando a conta após logar na aplicação
-		CONTA_ID = given()
-			
-			//Enviado em um body o nome da conta que será cadastrada
-			.body("{\"nome\": \""+CONTA_NAME+"\"}")
-		.when()
-			//Rota em que a conta será cadastrada
-			.post("/contas")
-		.then()
-			.statusCode(201)
-			.extract().path("id")
-		;		
-	}
-	
-	@Test
-	public void t03_deveAlterarContaComSucesso() {
-		given()
-			.body("{\"nome\": \""+CONTA_NAME+" alterada\"}")
-			.pathParam("id", CONTA_ID)
-		.when()
-			.put("/contas/{id}")// id da conta que fiz a alteração
-		.then()
-			.log().all()
-			.statusCode(200)
-			.body("nome", is(CONTA_NAME+" alterada"))
-		;		
-	}	
-	
-	@Test
-	public void t04_naoDeveInserirContaMesmoNome() {
-		given()
-			.body("{\"nome\": \""+CONTA_NAME+" alterada\"}")
-		.when()
-			.post("/contas")// id da conta que fiz a alteração
-		.then()
-			.statusCode(400)
-			.body("error", is("Já existe uma conta com esse nome!"))
-			
-		;		
-	}	
-	
-	@Test
 	public void t05_deveInserirMovimentacaoComSucesso() {
 		
 		Movimentacao mov = getMovimentacaoVlida();

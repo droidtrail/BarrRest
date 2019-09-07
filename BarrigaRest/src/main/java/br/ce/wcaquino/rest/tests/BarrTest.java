@@ -47,18 +47,6 @@ public class BarrTest extends BaseTest {
 		    
 		    RestAssured.requestSpecification.header("Authorization", "JWT " + TOKEN);
 	}
-
-	@Test
-	public void t09_deveCalcularSaldoContas() {
-		
-		given() 
-		.when()
-			.get("/saldo")//ID da conta
-		.then()
-			.statusCode(200)
-			.body("find{it.conta_id == "+CONTA_ID+"}.saldo", is("100.00"))	
-		;		
-	}
 	
 	//Esse método de teste não tem Token
 	@Test

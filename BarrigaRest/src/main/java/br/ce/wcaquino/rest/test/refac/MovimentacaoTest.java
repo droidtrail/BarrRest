@@ -5,42 +5,15 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.hamcrest.Matchers;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.ce.wcaquino.rest.core.BaseTest;
 import br.ce.wcaquino.rest.tests.Movimentacao;
+import br.ce.wcaquino.rest.utils.BarrUtils;
 import br.ce.wcaquino.rest.utils.DateUtils;
-import io.restassured.RestAssured;
 
 public class MovimentacaoTest extends BaseTest {
-	
-	@BeforeClass
-	public static void login() {
-		
-	//Criando Map para enviar o token para ter acesso a aplicação e poder inserir uma conta
-		Map<String, String> login = new HashMap<>();
-		 login.put("email", "leandro.nares@gmail.com");
-		 login.put("senha", "123");	
-		 
-			//Variável que receberá o Token	
-		    String TOKEN = given() 
-			//Enviado o usuário e senha para a API
-				.body(login)
-				.when()
-					.post("/signin")
-				.then()
-					.statusCode(200)
-					//Extraindo o Token
-					.extract().path("token");	
-		    
-		    RestAssured.requestSpecification.header("Authorization", "JWT " + TOKEN);
-		    RestAssured.get("/reset").then().statusCode(200);
-	}
 	
 	@Test
 	public void deveInserirMovimentacaoComSucesso() {
@@ -99,7 +72,7 @@ public class MovimentacaoTest extends BaseTest {
 	@Test
 	public void naoDeveRemoverContaComMovimentacao() {
 		
-		Integer CONTA_ID = getIdContaPeloNome("Conta com movimentacao");
+		Integer CONTA_ID = BarrUtils.getIdContaPeloNome("Conta com movimentacao");
 		
 		given()
 			.pathParam("id", CONTA_ID)
@@ -114,7 +87,7 @@ public class MovimentacaoTest extends BaseTest {
 	@Test
 	public void deveRemoverMovimentacao() {
 		
-		Integer MOV_ID = getIdMovPelaDescricao("Movimentacao para exclusao");
+		Integer MOV_ID = BarrUtils.getIdMovPelaDescricao("Movimentacao para exclusao");
 		
 		given()
 			.pathParam("id", MOV_ID)
@@ -125,23 +98,10 @@ public class MovimentacaoTest extends BaseTest {
 		;		
 	}
 	
-	//Pesquisar pelo nome da conta para obter o ID dela
-	public Integer getIdContaPeloNome(String nome) {
-		
-		return RestAssured.get("/contas?nome="+nome).then().extract().path("id[0]");
-		 
-	}
-	
-	//Pesquisar pelo id da descrição
-		public Integer getIdMovPelaDescricao(String desc) {
-			
-			return RestAssured.get("/transacoes?descricao="+desc).then().extract().path("id[0]");
-			 
-		}
 	
 	private Movimentacao getMovimentacaoVlida() {
 		Movimentacao mov = new Movimentacao();
-		mov.setConta_id(getIdContaPeloNome("Conta para movimentacoes"));
+		mov.setConta_id(BarrUtils.getIdContaPeloNome("Conta para movimentacoes"));
 		//mov.setUsuario_id(usuario_id);
 		mov.setDescricao("Descricao da Movimentacao");
 		mov.setEnvolvido("Envolvido na movimentacao");
